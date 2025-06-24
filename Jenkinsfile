@@ -11,12 +11,7 @@ pipeline {
     stage('Instalar dependencias') {
       steps {
         dir('backend') {
-          sh '''
-            echo "Listando archivos en backend:"
-            ls -la
-            echo "Instalando dependencias..."
-            docker run --rm -v "$PWD":/app -w /app node:18 bash -c "npm install"
-          '''
+          sh 'docker run --rm -v "$(pwd)":/app -w /app node:18 bash -c "npm install"'
         }
       }
     }
@@ -24,10 +19,7 @@ pipeline {
     stage('Ejecutar pruebas') {
       steps {
         dir('backend') {
-          sh '''
-            echo "Ejecutando pruebas..."
-            docker run --rm -v "$PWD":/app -w /app node:18 bash -c "npm test"
-          '''
+          sh 'docker run --rm -v "$(pwd)":/app -w /app node:18 bash -c "npm test"'
         }
       }
     }
@@ -39,4 +31,5 @@ pipeline {
     }
   }
 }
+
 
