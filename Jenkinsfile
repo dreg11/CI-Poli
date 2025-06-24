@@ -11,7 +11,7 @@ pipeline {
     stage('Instalar dependencias') {
       steps {
         dir('backend') {
-          sh 'docker run --rm -v "$PWD":/app -w /app node:18 npm install'
+          sh 'docker run --rm -v $(pwd):/app -w /app node:18 npm install'
         }
       }
     }
@@ -19,7 +19,7 @@ pipeline {
     stage('Ejecutar pruebas') {
       steps {
         dir('backend') {
-          sh 'docker run --rm -v "$PWD":/app -w /app node:18 npm test'
+          sh 'docker run --rm -v $(pwd):/app -w /app node:18 npm test'
         }
       }
     }
