@@ -1,37 +1,36 @@
-version: "3.8"
+pipeline {
+  agent any
 
-services:
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: ci-backend
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./backend:/app
-      - /app/node_modules  # <-- Protege node_modules dentro del contenedor
-    networks:
-      - ci-network
+  stages {
+    stage('Clonar código') {
+      steps {
+        git 'https://github.com/dreg11/CI-Poli.git'
+      }
+    }
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: ci-frontend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules  # <-- También protege node_modules en frontend
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-    networks:
-      - ci-network
-    depends_on:
-      - backend
+    stage('Instalar dependencias') {
+      steps {
+        dir('backend') {
+          sh 'docker run --rm -v "$PWD":/app -w /app node:18 npm install'
+        }
+      }
+    }
 
-networks:
-  ci-network:
-    driver: bridge
+    stage('Ejecutar pruebas') {
+      steps {
+        dir('backend') {
+          sh 'docker run --rm -v "$PWD":/app -w /app node:18 npm test'
+        }
+      }
+    }
+
+    stage('Construir imagen Docker') {
+      steps {
+        sh 'docker build -t ci-backend ./backend'
+      }
+    }
+  }
+}
+
+
 
