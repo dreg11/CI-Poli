@@ -1,12 +1,37 @@
-version: '3.8'
+version: "3.8"
 
 services:
   backend:
-    build: ./backend
-    container_name: todo-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ci-backend
     ports:
       - "3001:3001"
     volumes:
       - ./backend:/app
-      - /app/node_modules
-    restart: unless-stopped
+      - /app/node_modules  # <-- Protege node_modules dentro del contenedor
+    networks:
+      - ci-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ci-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # <-- También protege node_modules en frontend
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - ci-network
+    depends_on:
+      - backend
+
+networks:
+  ci-network:
+    driver: bridge
+
