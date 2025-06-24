@@ -1,0 +1,18 @@
+# Dockerfile.test
+FROM node:18
+
+WORKDIR /app
+
+# Copiamos solo package.json y package-lock.json primero
+COPY package*.json ./
+
+# Instalamos dependencias DENTRO del contenedor
+RUN npm install
+
+# Luego copiamos el resto del código
+COPY . .
+
+# Ejecutamos los tests
+CMD ["npm", "test"]
+
+
