@@ -1,38 +1,33 @@
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('Clonar repositorio') {
-            steps {
-                echo 'Repositorio clonado automáticamente por Jenkins.'
-            }
-        }
-
-        stage('Construir imagen de pruebas') {
-            steps {
-                dir('backend') {
-                    script {
-                        docker.build("backend-test", "-f Dockerfile.test .")
-                    }
-                }
-            }
-        }
-
-        stage('Ejecutar pruebas') {
-            steps {
-                script {
-                    docker.image('backend-test').run('--rm')
-                }
-            }
-        }
+  stages {
+    stage('Clonar código') {
+      steps {
+        git 'https://github.com/dreg11/CI-Poli.git'
+      }
     }
 
-    post {
-        success {
-            echo '✅ Las pruebas pasaron correctamente.'
+    stage('Instalar dependencias') {
+      steps {
+        dir('backend') {
+          sh 'docker run --rm -v "$PWD":/app -w /app node:18 npm install'
         }
-        failure {
-            echo '❌ Las pruebas fallaron. Revisa el código.'
-        }
+      }
     }
+
+    stage('Ejecutar pruebas') {
+      steps {
+        dir('backend') {
+          sh 'docker run --rm -v "$PWD":/app -w /app node:18 npm test'
+        }
+      }
+    }
+
+    stage('Construir imagen Docker') {
+      steps {
+        sh 'docker build -t ci-backend ./backend'
+      }
+    }
+  }
 }
