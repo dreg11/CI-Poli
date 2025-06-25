@@ -7,20 +7,20 @@ usando Docker Compose, Jest, Codecov, Jenkins y GitHub Actions.
 
 ## 🧱 Estructura del proyecto
 CI‑Poli/
-├── backend/
-│ ├── index.js # servidor Express + SQLite
-│ ├── db/database.js # configuración de base de datos
-│ ├── tests/ # prueba con Jest + Supertest
-│ ├── package.json # scripts y dependencias
-│ └── Dockerfile
-├── frontend/
-│ ├── ... # código frontend
-│ └── Dockerfile
-├── docker-compose.yml # orquesta backend + frontend
-├── Jenkinsfile # CI Pipeline (Jenkins)
-└── .github/
-└── workflows/
-└── codecov.yml # CI Pipeline (GitHub Actions)
+- backend/
+index.js # servidor Express + SQLite
+db/database.js # configuración de base de datos
+tests/ # prueba con Jest + Supertest
+package.json # scripts y dependencias
+│Dockerfile
+- frontend/
+# código frontend
+ Dockerfile
+docker-compose.yml # orquesta backend + frontend
+Jenkinsfile # CI Pipeline (Jenkins)
+.github/
+workflows/
+codecov.yml # CI Pipeline (GitHub Actions)
 
 
 ---
