@@ -38,7 +38,7 @@ function App() {
         onChange={e => setNewTask(e.target.value)}
         placeholder="Nueva tarea"
       />
-      <button onClick={addTodo}>Agregar</button>
+      <button onClick={addTodo}>Añadir</button>
 
       <ul>
         {todos.map(todo => (
