@@ -1,4 +1,4 @@
-pipeline {
+pipeline { 
   agent any
 
   stages {
@@ -8,22 +8,33 @@ pipeline {
       }
     }
 
-    stage('Instalar dependencias') {
+    stage('Verificar archivos en contenedor') {
       steps {
         dir('backend') {
           sh '''
-            echo "[INFO] Contenido de la carpeta backend antes de instalar dependencias:"
+            echo "[Host] Contenido actual en el backend:"
             ls -l
 
-            echo "[INFO] Mostrando package.json:"
-            cat package.json || echo "No se encontró package.json"
-
-            echo "[INFO] Ejecutando npm install dentro del contenedor..."
+            echo "[Contenedor] Contenido montado en /app:"
             docker run --rm \
               -v "$(pwd):/app" \
               -w /app \
               node:18 \
-              bash -c "npm install"
+              bash -c "ls -l /app && cat /app/package.json || echo 'package.json NO encontrado'"
+          '''
+        }
+      }
+    }
+
+    stage('Instalar dependencias') {
+      steps {
+        dir('backend') {
+          sh '''
+            docker run --rm \
+            -v "$(pwd):/app" \
+            -w /app \
+            node:18 \
+            bash -c "npm install"
           '''
         }
       }
@@ -33,12 +44,11 @@ pipeline {
       steps {
         dir('backend') {
           sh '''
-            echo "[INFO] Ejecutando pruebas unitarias con npm test..."
             docker run --rm \
-              -v "$(pwd):/app" \
-              -w /app \
-              node:18 \
-              bash -c "npm test"
+            -v "$(pwd):/app" \
+            -w /app \
+            node:18 \
+            bash -c "npm test"
           '''
         }
       }
@@ -46,7 +56,6 @@ pipeline {
 
     stage('Construir imagen Docker') {
       steps {
-        echo "[INFO] Construyendo imagen Docker del backend..."
         sh 'docker build -t ci-backend ./backend'
       }
     }
