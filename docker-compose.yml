@@ -10,6 +10,7 @@ services:
       - "3001:3001"
     volumes:
       - ./backend:/app
+      - /app/node_modules        # Montaje vacío para evitar conflictos con node_modules del host
     networks:
       - ci-network
 
