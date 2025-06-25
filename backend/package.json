@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "prueba CI con Jenkins",
+  "description": "Prueba CI con Jenkins",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -16,8 +16,10 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "jest": "^30.0.2",
+    "jest": "^30.0.3",
     "supertest": "^7.1.1"
+  },
+  "directories": {
+    "test": "tests"
   }
 }
-
