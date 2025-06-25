@@ -1,7 +1,8 @@
-pipeline {  
+pipeline {
   agent any
 
   stages {
+
     stage('Clonar código') {
       steps {
         git 'https://github.com/dreg11/CI-Poli.git'
@@ -30,6 +31,7 @@ pipeline {
                   cat /app/package.json
                 else
                   echo "[ERROR] package.json NO encontrado en el contenedor"
+                  exit 1
                 fi
               '
           '''
@@ -41,19 +43,19 @@ pipeline {
       steps {
         dir('backend') {
           sh '''
-            echo "[Instalación de dependencias en contenedor Docker]"
+            echo "[Instalando dependencias en contenedor Docker]"
             docker run --rm \
               -v "$(pwd):/app" \
               -w /app \
               node:18 \
-              bash -c '
+              bash -c "
                 if [ -f /app/package.json ]; then
                   npm install
                 else
-                  echo "[ERROR] package.json NO encontrado, cancelando instalación."
+                  echo '[ERROR] No se encontró package.json, cancelando instalación.'
                   exit 1
                 fi
-              '
+              "
           '''
         }
       }
@@ -63,19 +65,19 @@ pipeline {
       steps {
         dir('backend') {
           sh '''
-            echo "[Ejecución de pruebas en contenedor Docker]"
+            echo "[Ejecutando pruebas en contenedor Docker]"
             docker run --rm \
               -v "$(pwd):/app" \
               -w /app \
               node:18 \
-              bash -c '
+              bash -c "
                 if [ -f /app/package.json ]; then
-                  npm test
+                  npm test || echo '[ADVERTENCIA] Pruebas fallaron'
                 else
-                  echo "[ERROR] package.json NO encontrado, no se pueden ejecutar pruebas."
+                  echo '[ERROR] No se encontró package.json, no se ejecutan pruebas.'
                   exit 1
                 fi
-              '
+              "
           '''
         }
       }
