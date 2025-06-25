@@ -1,0 +1,37 @@
+name: CI Backend Coverage
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test-and-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        working-directory: ./backend
+        run: npm install
+
+      - name: Ejecutar pruebas y generar cobertura
+        working-directory: ./backend
+        run: npm run coverage
+
+      - name: Subir cobertura a Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}  # solo si tu repo es privado
+          directory: ./backend/coverage
+          fail_ci_if_error: true
