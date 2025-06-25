@@ -12,7 +12,7 @@ pipeline {
       steps {
         dir('backend') {
           sh '''
-            echo "[Host] Contenido actual en el backend:"
+            echo "[Host] Contenido actual en backend:"
             ls -l
 
             echo "[Contenedor] Contenido montado en /app:"
@@ -21,15 +21,15 @@ pipeline {
               -w /app \
               node:18 \
               bash -c '
-                echo "Archivos en /app:"
-                ls -l /app || echo "No se pudo listar /app"
+                echo "Contenido en /app:"
+                ls -l /app
 
                 echo ""
-                echo "Contenido de package.json:"
                 if [ -f /app/package.json ]; then
+                  echo "[OK] package.json encontrado"
                   cat /app/package.json
                 else
-                  echo "ERROR: package.json NO encontrado dentro del contenedor"
+                  echo "[ERROR] package.json NO encontrado en el contenedor"
                 fi
               '
           '''
@@ -50,7 +50,7 @@ pipeline {
                 if [ -f /app/package.json ]; then
                   npm install
                 else
-                  echo "ERROR: No se encontró package.json. Cancelando instalación."
+                  echo "[ERROR] package.json NO encontrado, cancelando instalación."
                   exit 1
                 fi
               '
@@ -72,7 +72,7 @@ pipeline {
                 if [ -f /app/package.json ]; then
                   npm test
                 else
-                  echo "ERROR: No se encontró package.json. No se pueden ejecutar pruebas."
+                  echo "[ERROR] package.json NO encontrado, no se pueden ejecutar pruebas."
                   exit 1
                 fi
               '
@@ -89,4 +89,3 @@ pipeline {
     }
   }
 }
-
