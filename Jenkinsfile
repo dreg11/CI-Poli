@@ -12,11 +12,18 @@ pipeline {
       steps {
         dir('backend') {
           sh '''
+            echo "[INFO] Contenido de la carpeta backend antes de instalar dependencias:"
+            ls -l
+
+            echo "[INFO] Mostrando package.json:"
+            cat package.json || echo "No se encontró package.json"
+
+            echo "[INFO] Ejecutando npm install dentro del contenedor..."
             docker run --rm \
-            -v "$(pwd):/app" \
-            -w /app \
-            node:18 \
-            bash -c "ls -l && cat package.json && npm install"
+              -v "$(pwd):/app" \
+              -w /app \
+              node:18 \
+              bash -c "npm install"
           '''
         }
       }
@@ -26,11 +33,12 @@ pipeline {
       steps {
         dir('backend') {
           sh '''
+            echo "[INFO] Ejecutando pruebas unitarias con npm test..."
             docker run --rm \
-            -v "$(pwd):/app" \
-            -w /app \
-            node:18 \
-            bash -c "npm test"
+              -v "$(pwd):/app" \
+              -w /app \
+              node:18 \
+              bash -c "npm test"
           '''
         }
       }
@@ -38,6 +46,7 @@ pipeline {
 
     stage('Construir imagen Docker') {
       steps {
+        echo "[INFO] Construyendo imagen Docker del backend..."
         sh 'docker build -t ci-backend ./backend'
       }
     }
