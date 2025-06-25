@@ -5,22 +5,27 @@ usando Docker Compose, Jest, Codecov, Jenkins y GitHub Actions.
 
 ---
 
-## 🧱 Estructura del proyecto
-CI‑Poli/
-- backend/
-index.js # servidor Express + SQLite
-db/database.js # configuración de base de datos
-tests/ # prueba con Jest + Supertest
-package.json # scripts y dependencias
-│Dockerfile
-- frontend/
-# código frontend
- Dockerfile
-docker-compose.yml # orquesta backend + frontend
-Jenkinsfile # CI Pipeline (Jenkins)
-.github/
-workflows/
-codecov.yml # CI Pipeline (GitHub Actions)
+## 📁 Estructura del proyecto
+
+```
+CI-Poli/
+├── backend/
+│   ├── index.js               # Servidor Express + SQLite
+│   ├── db/
+│   │   └── database.js        # Configuración de base de datos
+│   ├── tests/                 # Pruebas con Jest + Supertest
+│   ├── package.json           # Scripts y dependencias
+│   └── Dockerfile             # Dockerfile para backend
+├── frontend/
+│   ├── src/                   # Código fuente frontend (React)
+│   └── Dockerfile             # Dockerfile para frontend
+├── docker-compose.yml         # Orquestación de backend y frontend
+├── Jenkinsfile                # Pipeline de integración continua con Jenkins
+└── .github/
+    └── workflows/
+        └── codecov.yml        # Pipeline para Codecov (GitHub Actions)
+```
+
 
 
 ---
