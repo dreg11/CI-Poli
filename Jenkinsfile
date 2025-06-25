@@ -10,23 +10,29 @@ pipeline {
 
     stage('Instalar dependencias') {
       steps {
-        sh """
-          docker run --rm \
-          -v ${env.WORKSPACE}/backend:/app \
-          -w /app node:18 \
-          bash -c "npm install"
-        """
+        dir('backend') {
+          sh '''
+            docker run --rm \
+            -v "$(pwd):/app" \
+            -w /app \
+            node:18 \
+            bash -c "ls -l && cat package.json && npm install"
+          '''
+        }
       }
     }
 
     stage('Ejecutar pruebas') {
       steps {
-        sh """
-          docker run --rm \
-          -v ${env.WORKSPACE}/backend:/app \
-          -w /app node:18 \
-          bash -c "npm test"
-        """
+        dir('backend') {
+          sh '''
+            docker run --rm \
+            -v "$(pwd):/app" \
+            -w /app \
+            node:18 \
+            bash -c "npm test"
+          '''
+        }
       }
     }
 
@@ -37,7 +43,3 @@ pipeline {
     }
   }
 }
-
-
-
-
